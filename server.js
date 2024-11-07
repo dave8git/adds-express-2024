@@ -10,6 +10,7 @@ const usersRoutes = require('./routes/users.routes');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api', postsRoutes);
 app.use('/auth', usersRoutes);
