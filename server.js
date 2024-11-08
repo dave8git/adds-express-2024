@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express(); 
+const path = require('path');
 
 const mongoose = require('mongoose');
 
@@ -10,7 +11,7 @@ const usersRoutes = require('./routes/users.routes');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/uploads', express.static('uploads'));
+app.use('/public', express.static(path.join(__dirname, 'public/images')));
 
 app.use('/api', postsRoutes);
 app.use('/auth', usersRoutes);
@@ -24,6 +25,9 @@ app.use('/auth', usersRoutes);
 // • POST /auth/register – do rejestracji nowego użytkownika,
 // • POST /auth/login – do weryfikacji użytkownika i utworzenia sesji,
 // • GET /auth/user – zwracający informację o aktualnie zalogowanym użytkowniku.
+app.get('/test-image', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/images/BonJovi.png'));
+  });
 
 app.use((req, res) => {
     res.status(404).send({ message: 'Not found...' });

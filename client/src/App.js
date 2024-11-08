@@ -17,7 +17,13 @@ function App() {
           <div key={post.id}>
             <h2>{post.title}</h2>
             <p>{post.content}</p>
-            
+            {post.image && (
+              <img
+              src={`http://localhost:8000/public/${post.image}`}
+                alt={post.title}
+                style={{ width: '100%', maxWidth: '500px' }}
+              />
+            )}
           </div>
         ))
       ) : (

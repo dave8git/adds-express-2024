@@ -14,7 +14,7 @@ router.put('/posts/:id', PostsControllers.putAd);
 
 router.delete('/posts/delete', PostsControllers.deleteAd);
 
-router.get('/posts/search/:searchPhrase', PostsControllers.search);
+router.get('/posts/search/:searchPhrase', PostsControllers.searchPhrase);
 
 // router.get('/employees/random', EmployeesControllers.getRandom);
 
