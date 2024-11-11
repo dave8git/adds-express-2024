@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 //const db = require('./../db');
+const getImageFileType = require('../config/getImageFileType');
 const ObjectId = require('mongodb').ObjectId;
 const Posts = require('../models/posts.model');
 const { default_type } = require('mime');
@@ -27,12 +28,22 @@ exports.getById = async (req, res) => {
 
 exports.postAd = async (req, res ) => {
     try {
-        const { title, content, date, image, price, location, seller } = req.body; 
-        const newPost = new Posts({ title, content, date, image, price, location, seller })
-        await newPost.save(); 
-        res.status(201).json(newPost);
+        const { title, content, date, price, location, seller } = req.body; 
+        if (!req.file) {
+            return res.status(400).json({ message: 'Image file is required.'});
+        }
+        const fileType = req.file ? await getImageFileType(req.file) : unknown;
+
+        if(req.file && ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)) {
+            const newPost = new Posts({ title, content, date, image: req.file.filename, price, location, seller })
+            await newPost.save(); 
+            res.status(201).json(newPost);
+        } else {
+            res.status(400).send({ message: 'Bad request'});
+        }
+      
     } catch (err) {
-        res.status(400).json({ message: err });
+        res.status(500).json({ message: err });
     }
 };
 

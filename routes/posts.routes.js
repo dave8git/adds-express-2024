@@ -3,12 +3,13 @@ const router = express.Router();
 // //const db = require('./../db');
 // //const ObjectId = require('mongodb').ObjectId;
 const PostsControllers = require('../controllers/posts.controller');
+const upload = require('../config/multerConfig');
 
 router.get('/posts', PostsControllers.getAll);
 
 router.get('/posts/:id', PostsControllers.getById);
 
-router.post('/posts', PostsControllers.postAd);
+router.post('/posts', upload.single('image'), PostsControllers.postAd);
 
 router.put('/posts/:id', PostsControllers.putAd);
 
