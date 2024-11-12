@@ -26,24 +26,35 @@ exports.getById = async (req, res) => {
     }
 }
 
-exports.postAd = async (req, res ) => {
+exports.postAd = async (req, res) => {
     try {
         const { title, content, date, price, location, seller } = req.body; 
+        console.log('Received data:', req.body); // Check if data is being received
         if (!req.file) {
-            return res.status(400).json({ message: 'Image file is required.'});
+            return res.status(400).json({ message: 'Image file is required.' });
         }
         const fileType = req.file ? await getImageFileType(req.file) : unknown;
 
-        if(req.file && ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)) {
-            const newPost = new Posts({ title, content, date, image: req.file.filename, price, location, seller })
-            await newPost.save(); 
+        if (req.file && ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)) {
+            const newPost = new Posts({ 
+                title, 
+                content, 
+                date: date || new Date().toISOString(), // Add a default date if not provided
+                image: req.file.filename, 
+                price, 
+                location, 
+                seller 
+            });
+            await newPost.save();
+            console.log('Post saved:', newPost); // Confirm the post is saved
             res.status(201).json(newPost);
         } else {
-            res.status(400).send({ message: 'Bad request'});
+            res.status(400).send({ message: 'Bad request' });
         }
       
     } catch (err) {
-        res.status(500).json({ message: err });
+        console.error('Error in postAd:', err); // Log any errors
+        res.status(500).json({ message: err.message });
     }
 };
 

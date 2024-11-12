@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addPostRequest } from '../../redux/postsReducer';
+import { useNavigate } from 'react-router-dom';
 
 const PostForm = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: '',
         content: '',
@@ -32,6 +34,7 @@ const PostForm = () => {
         if (image) data.append('image', image);
 
         dispatch(addPostRequest(data));
+        navigate('/');
     };
 
     return (

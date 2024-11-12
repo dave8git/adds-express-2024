@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 // sources: https://github.com/dave8git/testimonials-node-2024/blob/master/client/src/redux/seatsRedux.js
-const API_URL = 'http://localhost:8000/api/';
+const API_URL = 'http://localhost:8000/api';
 /* SELECTORS */
 export const getPosts = ({ posts }) => posts.data;
+export const getPostsById = ({ posts }, id) => posts.data.find(post => post._id === id);
 
 /* ACTIONS */
 // action name creator
@@ -15,7 +16,7 @@ const END_REQUEST = createActionName('END_REQUEST');
 const ERROR_REQUEST = createActionName('ERROR_REQUEST');
 
 const LOAD_POSTS = createActionName('LOAD_POSTS');
-const ADD_POST = createActionName('ADD_SEAT');
+const ADD_POST = createActionName('ADD_POST');
 
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const endRequest = payload => ({ payload, type: END_REQUEST });
@@ -50,10 +51,16 @@ export const loadLocalPosts = () => {
 // dokończyć dalej wzorując się na pliku: // sources: https://github.com/dave8git/testimonials-node-2024/blob/master/client/src/redux/seatsRedux.js
 
 export const addPostRequest = (post) => {
+    console.log('addPostRequest works');
     return async dispatch => {
         dispatch(startRequest({ name: 'ADD_POST' }));
         try {
-            let res = await axios.post(`${API_URL}/posts`, post);
+            let res = await axios.post(`${API_URL}/posts`, post, {
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // }
+            });
+            console.log('res', res);
             await new Promise((resolve) => setTimeout(resolve, 1000));
             dispatch(addPost(res));
             dispatch(endRequest({ name: 'ADD_POST' }));
@@ -79,6 +86,7 @@ export default function reducer(statePart = initialState, action = {}) {
             console.log('!', action.payload);
             return { ...statePart, data: [...action.payload] };
         case ADD_POST:
+            console.log('Adding post to state:', action.payload);
             return { ...statePart, data: [...statePart.data, action.payload] };
         case START_REQUEST:
             return { ...statePart, requests: { ...statePart.requests, [action.payload.name]: { pending: true, error: null, success: false } } };

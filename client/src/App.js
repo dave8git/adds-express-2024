@@ -1,32 +1,23 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadPostsRequest, getPosts } from './redux/postsReducer';
-import MiniPost from './components/MiniPost/MiniPost';
+import React from 'react';
+import MainPage from './components/MainPage/MainPage';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import FullPost from './components/FullPost/FullPost';
+import PostForm from './components/PostForm/PostForm';
 
 function App() {
-  const dispatch = useDispatch();
-  const posts = useSelector(getPosts);
-
-  useEffect(() => {
-    dispatch(loadPostsRequest());
-  }, [dispatch]);
 
   return (
-    <div className="container">
-      <h1>Posts</h1>
-      {posts && posts.length > 0 ? (
-        <div className="row">
-          {posts.map((post) => (
-            <div className="col-md-4" key={post.id}>
-              <MiniPost post={post} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No posts available.</p>
-      )}
-    </div>
+    <Router>
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/post/:id" element={<FullPost />} />
+          <Route path="/add-post" element={<PostForm />} />
+        </Routes>
+      </div>
+    </Router>
+
   );
 }
 

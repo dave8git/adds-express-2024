@@ -3,8 +3,10 @@
 
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 function MiniPost({ post }) {
+  console.log('post.id', post.id);
   return (
     <Card key={post.id} className="mb-4" style={{ maxWidth: '500px', margin: 'auto' }}>
       {post.image && (
@@ -18,7 +20,9 @@ function MiniPost({ post }) {
       <Card.Body>
         <Card.Title>{post.title}</Card.Title>
         <Card.Text>{post.content}</Card.Text>
-        <Button variant="primary">Read More</Button>
+        <Link to={`/post/${post._id}`}>
+          <Button variant="primary">Read More</Button>
+        </Link>
       </Card.Body>
     </Card>
   );
