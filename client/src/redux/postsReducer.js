@@ -14,14 +14,14 @@ const createActionName = name => `app/${reducerName}/${name}`;
 const START_REQUEST = createActionName('START_REQUEST');
 const END_REQUEST = createActionName('END_REQUEST');
 const ERROR_REQUEST = createActionName('ERROR_REQUEST');
-
+const DELETE_POST = createActionName('DELETE_POST');
 const LOAD_POSTS = createActionName('LOAD_POSTS');
 const ADD_POST = createActionName('ADD_POST');
 
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const endRequest = payload => ({ payload, type: END_REQUEST });
 export const errorRequest = payload => ({ payload, type: ERROR_REQUEST });
-
+export const deletePost = payload => ({ payload, type: DELETE_POST });
 export const loadPosts = payload => ({ payload, type: LOAD_POSTS });
 export const addPost = payload => ({ payload, type: ADD_POST });
 
@@ -72,6 +72,22 @@ export const addPostRequest = (post) => {
     };
 };
 
+
+export const deletePostRequest = (id) => {
+    console.log('deleting post with id: ', id);
+    return async (dispatch) => {
+      dispatch(startRequest({ name: 'DELETE_POST' }));
+      try {
+        await axios.delete(`${API_URL}/posts/${id}`);
+        dispatch(deletePost(id));
+        console.log('deletePost action dispatched'); // Check if this logs
+        dispatch(endRequest({ name: 'DELETE_POST' }));
+      } catch (error) {
+        dispatch(errorRequest({ name: 'DELETE_POST', error: error.response?.data?.message || 'An error occurred' }));
+      }
+    };
+  };
+
 /* INITIAL STATE */
 const initialState = {
     data: [],
@@ -94,6 +110,9 @@ export default function reducer(statePart = initialState, action = {}) {
             return { ...statePart, requests: { ...statePart.requests, [action.payload.name]: { pending: true, error: null, success: true } } };
         case ERROR_REQUEST:
             return { ...statePart, requests: { ...statePart.requests, [action.payload.name]: { pending: false, error: action.payload.error, success: false } } };
+        case DELETE_POST: 
+            console.log('delete request works');
+            return { ...statePart, data: statePart.data.filter(post => post._id !== action.payload) };
         default:
             return statePart;
     }

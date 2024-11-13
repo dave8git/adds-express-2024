@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { getPostsById, loadPostsRequest } from '../../redux/postsReducer';
+import { deletePostRequest, getPostsById, loadPostsRequest } from '../../redux/postsReducer';
 import { Container, Row, Col, Card, Button, Spinner } from 'react-bootstrap';
 
 function FullPost() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const post = useSelector((state) => getPostsById(state, id));
 
   useEffect(() => {
@@ -14,6 +15,20 @@ function FullPost() {
       dispatch(loadPostsRequest(id));
     }
   }, [dispatch, id, post]);
+
+  const handleDelete = async () => {
+    console.log('handleDelete works');
+    try {
+      await dispatch(deletePostRequest(id));
+      navigate('/');
+    } catch (error) {
+      alert('Failed to delete the post. Please try again.');
+    }
+  }
+
+  const handleMainPage = async () => {
+    navigate('/');
+  }
 
   return post ? (
     <Container className="mt-4">
@@ -41,10 +56,11 @@ function FullPost() {
                 <strong>Seller:</strong> {post.seller}
               </Card.Text>
               {/* Add edit buttons here if needed */}
-              <Button variant="secondary" className="mr-2">
-                Edit Post
-              </Button>
-              <Button variant="danger">Delete Post</Button>
+              <Link to={`/post/${post._id}`}>
+                <Button variant="secondary" className="mr-2">Edit Post</Button>
+              </Link>
+              <Button variant="danger" onClick={handleDelete}>Delete Post</Button>
+              <Button variant="info" onClick={handleMainPage}>Main Page</Button>
             </Card.Body>
           </Card>
         </Col>

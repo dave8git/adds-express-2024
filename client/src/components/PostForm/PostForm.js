@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addPostRequest } from '../../redux/postsReducer';
 import { useNavigate } from 'react-router-dom';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 const PostForm = () => {
     const dispatch = useDispatch();
@@ -38,15 +39,81 @@ const PostForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" name="title" placeholder="Title" onChange={handleChange} />
-            <textarea name="content" placeholder="Content" onChange={handleChange}></textarea>
-            <input type="number" name="price" placeholder="Price" onChange={handleChange} />
-            <input type="text" name="location" placeholder="Location" onChange={handleChange} />
-            <input type="text" name="seller" placeholder="Seller" onChange={handleChange} />
-            <input type="file" onChange={handleImageChange} />
-            <button type="submit">Add Post</button>
-        </form>
+        <Container>
+            <Row className="justify-content-center">
+                <Col md={6}>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group controlId="title">
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                name="title" 
+                                placeholder="Title" 
+                                value={formData.title} 
+                                onChange={handleChange} 
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="content">
+                            <Form.Label>Content</Form.Label>
+                            <Form.Control 
+                                as="textarea" 
+                                rows={3} 
+                                name="content" 
+                                placeholder="Content" 
+                                value={formData.content} 
+                                onChange={handleChange} 
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="price">
+                            <Form.Label>Price</Form.Label>
+                            <Form.Control 
+                                type="number" 
+                                name="price" 
+                                placeholder="Price" 
+                                value={formData.price} 
+                                onChange={handleChange} 
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="location">
+                            <Form.Label>Location</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                name="location" 
+                                placeholder="Location" 
+                                value={formData.location} 
+                                onChange={handleChange} 
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="seller">
+                            <Form.Label>Seller</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                name="seller" 
+                                placeholder="Seller" 
+                                value={formData.seller} 
+                                onChange={handleChange} 
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="image">
+                            <Form.Label>Image</Form.Label>
+                            <Form.Control 
+                                type="file" 
+                                onChange={handleImageChange} 
+                            />
+                        </Form.Group>
+
+                        <Button variant="primary" type="submit" className="mt-3">
+                            Add Post
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

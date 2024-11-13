@@ -13,7 +13,7 @@ router.post('/posts', upload.single('image'), PostsControllers.postAd);
 
 router.put('/posts/:id', PostsControllers.putAd);
 
-router.delete('/posts/delete', PostsControllers.deleteAd);
+router.delete('/posts/:id', PostsControllers.deleteAd);
 
 router.get('/posts/search/:searchPhrase', PostsControllers.searchPhrase);
 
