@@ -17,7 +17,6 @@ function FullPost() {
   }, [dispatch, id, post]);
 
   const handleDelete = async () => {
-    console.log('handleDelete works');
     try {
       await dispatch(deletePostRequest(id));
       navigate('/');
@@ -56,7 +55,7 @@ function FullPost() {
                 <strong>Seller:</strong> {post.seller}
               </Card.Text>
               {/* Add edit buttons here if needed */}
-              <Link to={`/post/${post._id}`}>
+              <Link to={`/edit-post/${post._id}`}>
                 <Button variant="secondary" className="mr-2">Edit Post</Button>
               </Link>
               <Button variant="danger" onClick={handleDelete}>Delete Post</Button>

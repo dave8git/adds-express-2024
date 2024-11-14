@@ -6,7 +6,6 @@ import { Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 function MiniPost({ post }) {
-  console.log('post.id', post.id);
   return (
     <Card key={post.id} className="mb-4" style={{ maxWidth: '500px', margin: 'auto' }}>
       {post.image && (

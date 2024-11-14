@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addPostRequest } from '../../redux/postsReducer';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPostRequest, updatePostRequest, getPostsById } from '../../redux/postsReducer';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 const PostForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { id } = useParams(); 
+    const post = useSelector((state) => getPostsById(state, id));
+
     const [formData, setFormData] = useState({
         title: '',
         content: '',
@@ -16,6 +19,20 @@ const PostForm = () => {
     });
     const [image, setImage] = useState(null);
 
+    useEffect(() => {
+        console.log('Loaded post for editing:', post);
+        if (post) {
+            setFormData({
+                title: post.title || '',
+                content: post.content || '',
+                price: post.price || '',
+                location: post.location || '',
+                seller: post.seller || '',
+            });
+        }
+    }, [post]);
+   
+    
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -23,6 +40,26 @@ const PostForm = () => {
     const handleImageChange = (e) => {
         setImage(e.target.files[0]);
     };
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     const data = new FormData();
+    //     data.append('title', formData.title);
+    //     console.log('fdsfdsa');
+    //     data.append('content', formData.content);
+    //     data.append('price', formData.price);
+    //     data.append('location', formData.location);
+    //     data.append('seller', formData.seller);
+    //     if (image) data.append('image', image);
+
+    //     if (id) {
+    //         console.log('updatePostRequest started', id, data);
+    //         dispatch(updatePostRequest(id, data));
+    //     } else {
+    //         dispatch(addPostRequest(data));
+    //     }
+    //     navigate('/');
+    // };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -32,10 +69,23 @@ const PostForm = () => {
         data.append('price', formData.price);
         data.append('location', formData.location);
         data.append('seller', formData.seller);
-        if (image) data.append('image', image);
-
-        dispatch(addPostRequest(data));
-        navigate('/');
+    
+        if (image) {
+            data.append('image', image);
+        }
+    
+        data.forEach((value, key) => {
+            console.log(key, value); // Logs each form data key and its value
+        });
+        
+        if (id) {
+            console.log('updatePostRequest started', id, data);
+            dispatch(updatePostRequest(id, data));
+        } else {
+            dispatch(addPostRequest(data));
+        }
+    
+        navigate('/'); // Redirect after submission
     };
 
     return (
@@ -108,7 +158,7 @@ const PostForm = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="mt-3">
-                            Add Post
+                            {id ? 'Update Post' : 'Add Post'}
                         </Button>
                     </Form>
                 </Col>
