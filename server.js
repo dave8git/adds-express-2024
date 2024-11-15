@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 
 const postsRoutes = require('./routes/posts.routes');
 const usersRoutes = require('./routes/users.routes');
+const usersAuth = require('./routes/auth.routes');
 
 app.use(cors());
 app.use(express.json());
@@ -14,7 +15,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/public', express.static(path.join(__dirname, 'public/images')));
 
 app.use('/api', postsRoutes);
-app.use('/auth', usersRoutes);
+app.use('/api', usersRoutes);
+app.use('/auth', usersAuth);
 
 // • GET /api/ads – który zwróci wszystkie ogłoszenia,
 // • GET /api/ads/:id – który zwróci konkretne ogłoszenie,
@@ -25,9 +27,6 @@ app.use('/auth', usersRoutes);
 // • POST /auth/register – do rejestracji nowego użytkownika,
 // • POST /auth/login – do weryfikacji użytkownika i utworzenia sesji,
 // • GET /auth/user – zwracający informację o aktualnie zalogowanym użytkowniku.
-app.get('/test-image', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/images/BonJovi.png'));
-  });
 
 app.use((req, res) => {
     res.status(404).send({ message: 'Not found...' });
