@@ -2,8 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const app = express(); 
 const path = require('path');
-const multer = require('multer');
+//const multer = require('multer');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 const postsRoutes = require('./routes/posts.routes');
 const usersRoutes = require('./routes/users.routes');
@@ -13,6 +15,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/public', express.static(path.join(__dirname, 'public/images')));
+app.use(
+    session({
+        secret: 'xyz567',
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: 'mongodb://0.0.0.0:27017/postsDB', // Replace with your database URI
+        }),
+    })
+);
+
+app.use(express.static(path.join(__dirname,'/client/build'))); 
+
+
 
 app.use('/api', postsRoutes);
 app.use('/api', usersRoutes);
