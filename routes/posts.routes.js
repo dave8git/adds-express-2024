@@ -4,7 +4,7 @@ const router = express.Router();
 // //const ObjectId = require('mongodb').ObjectId;
 const PostsControllers = require('../controllers/posts.controller');
 const upload = require('../config/multerConfig');
-
+router.get('/posts/search', PostsControllers.searchPhrase);
 router.get('/posts', PostsControllers.getAll);
 
 router.get('/posts/:id', PostsControllers.getById);
@@ -15,7 +15,9 @@ router.put('/posts/:id', PostsControllers.putAd);
 
 router.delete('/posts/:id', PostsControllers.deleteAd);
 
-router.get('/posts/search/:searchPhrase', PostsControllers.searchPhrase);
+//router.get('/posts/search/:searchPhrase', PostsControllers.searchPhrase);
+
+router.get('/posts/search', PostsControllers.searchPhrase);
 
 // router.get('/employees/random', EmployeesControllers.getRandom);
 

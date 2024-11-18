@@ -18,6 +18,7 @@ const DELETE_POST = createActionName('DELETE_POST');
 const LOAD_POSTS = createActionName('LOAD_POSTS');
 const ADD_POST = createActionName('ADD_POST');
 const UPDATE_POST = createActionName('UPDATE_POST');
+const SEARCH_POSTS = createActionName('SEARCH_POSTS');
 
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const endRequest = payload => ({ payload, type: END_REQUEST });
@@ -26,6 +27,7 @@ export const deletePost = payload => ({ payload, type: DELETE_POST });
 export const loadPosts = payload => ({ payload, type: LOAD_POSTS });
 export const updatePost = payload => ({ payload, type: UPDATE_POST });
 export const addPost = payload => ({ payload, type: ADD_POST });
+export const searchPosts = payload => ({ payload, type: SEARCH_POSTS });
 
 /* THUNKS */
 export const loadPostsRequest = () => {
@@ -115,6 +117,19 @@ export const updatePostRequest = (id, updatedData) => {
     };
 };
 
+export const searchPostsRequest = (searchPhrase) => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'SEARCH_POSTS' }));
+        try {
+            const res = await axios.get(`${API_URL}/posts/search?q=${encodeURIComponent(searchPhrase)}`);
+            dispatch(loadPosts(res.data)); // Use existing `loadPosts` action to update state
+            dispatch(endRequest({ name: 'SEARCH_POSTS' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'SEARCH_POSTS', error: error.message }));
+        }
+    };
+};
+
 /* INITIAL STATE */
 const initialState = {
     data: [],
@@ -146,6 +161,8 @@ export default function reducer(statePart = initialState, action = {}) {
                 ...statePart,
                 data: statePart.data.map(post => post._id === action.payload._id ? action.payload : post)
             };
+        case SEARCH_POSTS:
+            return { ...statePart, data: [...action.payload] };
         default:
             return statePart;
     }

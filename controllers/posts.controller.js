@@ -89,15 +89,29 @@ exports.deleteAd = async (req, res) => {
 
 exports.searchPhrase = async (req, res) => {
     try {
-        const searchPhrase = req.params.searchPhrase;
+        const searchPhrase = req.query.q; // Use query string parameter `q`
+        if (!searchPhrase) {
+            return res.status(400).json({ message: 'Search phrase is required' });
+        }
+
+        console.log('Search query received:', searchPhrase); // Log the search term
+
         const posts = await Posts.find({
             $or: [
-                { title: { $regex: searchPhrase, $options: 'i' } },
-                { content: { $regex: searchPhrase, $options: 'i' } }
-            ]
+                { title: { $regex: searchPhrase, $options: 'i' } }, // Case-insensitive regex
+                { content: { $regex: searchPhrase, $options: 'i' } },
+            ],
         });
+
+        if (posts.length === 0) {
+            console.log('No posts found for query:', searchPhrase);
+            return res.status(404).json({ message: 'No matching posts found' });
+        }
+
+        console.log('Posts found:', posts.length); // Log the number of posts found
         res.json(posts);
     } catch (err) {
-        res.status(500).json({ message: err });
+        console.error('Error in searchPhrase handler:', err); // Log the error details
+        res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 };
