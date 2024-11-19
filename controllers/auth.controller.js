@@ -56,5 +56,5 @@ exports.getUser = async (req, res) => {
     // else {
     //     res.status(401).send({ message: 'Unauthoried' });
     // }
-    res.send('Logged in successfully!');
+    res.send(req.session.login);
 }

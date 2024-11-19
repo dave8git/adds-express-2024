@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadPostsRequest, searchPostsRequest, getPosts } from '../../redux/postsReducer';
+import { loadPostsRequest, searchPostsRequest, getPosts, getUserRequest } from '../../redux/postsReducer';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import MiniPost from '../MiniPost/MiniPost';
@@ -14,6 +14,10 @@ function MainPage() {
     dispatch(loadPostsRequest());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getUserRequest());
+  }, [dispatch]);
+  
   const user = useSelector(state => state.posts.user);
   console.log('user', user);
   const handleSearch = (e) => {

@@ -21,6 +21,7 @@ const UPDATE_POST = createActionName('UPDATE_POST');
 const SEARCH_POSTS = createActionName('SEARCH_POSTS');
 const REGISTER_USER = createActionName('REGISTER_USER');
 const LOGIN_USER = createActionName('LOGIN_USER');
+const GET_USER = createActionName('GET_USER');
 
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const endRequest = payload => ({ payload, type: END_REQUEST });
@@ -32,8 +33,23 @@ export const addPost = payload => ({ payload, type: ADD_POST });
 export const searchPosts = payload => ({ payload, type: SEARCH_POSTS });
 export const registerUser = (payload) => ({ payload, type: REGISTER_USER });
 export const loginUser = (payload) => ({ payload, type: LOGIN_USER });
+export const getUser = (payload) => ({payload, type: GET_USER });
 
 /* THUNKS */
+export const getUserRequest = () => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'GET_USER' }));
+        try {
+            const response = await axios.get(`${API_URL}/auth/user`);
+            console.log('getUser: response.data', response.data);
+            dispatch(getUser({message: response.data.message })); // Dispatch registration success
+            dispatch(endRequest({ name: 'GET_USER' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'GET_USER', error: error.response?.data?.message || 'An error occurred' }));
+        }
+    };
+};
+
 export const loginUserRequest = (formData) => {
     return async (dispatch) => {
         dispatch(startRequest({ name: 'LOGIN_USER' }));
