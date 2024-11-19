@@ -94,11 +94,11 @@ exports.searchPhrase = async (req, res) => {
             return res.status(400).json({ message: 'Search phrase is required' });
         }
 
-        console.log('Search query received:', searchPhrase); // Log the search term
+        console.log('Search query received:', searchPhrase);
 
         const posts = await Posts.find({
             $or: [
-                { title: { $regex: searchPhrase, $options: 'i' } }, // Case-insensitive regex
+                { title: { $regex: searchPhrase, $options: 'i' } },
                 { content: { $regex: searchPhrase, $options: 'i' } },
             ],
         });
@@ -108,10 +108,10 @@ exports.searchPhrase = async (req, res) => {
             return res.status(404).json({ message: 'No matching posts found' });
         }
 
-        console.log('Posts found:', posts.length); // Log the number of posts found
+        console.log('Posts found:', posts.length);
         res.json(posts);
     } catch (err) {
-        console.error('Error in searchPhrase handler:', err); // Log the error details
+        console.error('Error in searchPhrase handler:', err);
         res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 };
