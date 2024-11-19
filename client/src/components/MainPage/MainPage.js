@@ -14,6 +14,8 @@ function MainPage() {
     dispatch(loadPostsRequest());
   }, [dispatch]);
 
+  const user = useSelector(state => state.posts.user);
+  console.log('user', user);
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -25,7 +27,29 @@ function MainPage() {
 
   return (
     <div className="container">
-      <h1>Posts</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Posts</h1>
+        <div>
+          <Link to="/register">
+            <Button variant="outline-primary" className="me-2">
+              Register
+            </Button>
+          </Link>
+          {
+            user ? (<Link to="/logout">
+              <Button variant="outline-danger">
+                Logout
+              </Button>
+            </Link>) : (<Link to="/login">
+              <Button variant="outline-success">
+                Login
+              </Button>
+            </Link>)
+
+
+          }
+        </div>
+      </div>
       <Link to="/add-post">
         <Button variant="secondary" className="mb-4">
           Add Post
