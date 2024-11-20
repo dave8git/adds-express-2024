@@ -1,6 +1,29 @@
 const User = require('../models/users.model');
 const bcrypt = require('bcryptjs');
 
+const Session = require('../models/sessions.model'); // Add your session model if necessary
+
+exports.logout = async (req, res) => {
+    try {
+        if (req.session) {
+            req.session.destroy(async (err) => {
+                if (err) {
+                    return res.status(500).send({ message: 'Logout failed' });
+                }
+                // For non-production environments, clear all sessions
+                if (process.env.NODE_ENV !== 'production') {
+                    await Session.deleteMany({});
+                }
+                res.status(200).send({ message: 'Logout successful' });
+            });
+        } else {
+            res.status(400).send({ message: 'No active session' });
+        }
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+};
+
 exports.register = async (req, res) => {
     try {
         const { login, password } = req.body
@@ -21,6 +44,7 @@ exports.register = async (req, res) => {
    
 }
   
+
 exports.login = async (req, res) => {
     try {
         const { login, password } = req.body; 

@@ -30,6 +30,18 @@ export const addPost = payload => ({ payload, type: ADD_POST });
 export const searchPosts = payload => ({ payload, type: SEARCH_POSTS });
 
 /* THUNKS */
+export const logoutRequest = () => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'LOGOUT' }));
+        try {
+            await axios.post(`${API_URL}/auth/logout`);
+            dispatch(endRequest({ name: 'LOGOUT' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'LOGOUT', error: error.response?.data?.message || 'An error occurred' }));
+        }
+    };
+};
+
 export const loadPostsRequest = () => {
     return async dispatch => {
 

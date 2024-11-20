@@ -23,6 +23,11 @@ function MainPage() {
     }
   };
 
+  const handleLogout = async () => {
+    await dispatch(logoutRequest());
+    navigate('/login'); // Redirect to login page after logout
+  };
+
   return (
     <div className="container">
       <h1>Posts</h1>
