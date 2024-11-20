@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadPostsRequest, searchPostsRequest, getPosts, getUserRequest } from '../../redux/postsReducer';
-import { Link } from 'react-router-dom';
+import { loadPostsRequest, searchPostsRequest, getPosts, getUserRequest, logoutRequest } from '../../redux/postsReducer';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import MiniPost from '../MiniPost/MiniPost';
 
 function MainPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const posts = useSelector(getPosts);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -29,6 +30,11 @@ function MainPage() {
     }
   };
 
+  const handleLogout = async () => {
+    await dispatch(logoutRequest());
+    navigate('/login'); // Redirect to login page after logout
+  };
+
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -41,7 +47,7 @@ function MainPage() {
           </Link>
           {
             user ? (<Link to="/logout">
-              <Button variant="outline-danger">
+              <Button variant="outline-danger" onClick={handleLogout}>
                 Logout
               </Button>
             </Link>) : (<Link to="/login">
