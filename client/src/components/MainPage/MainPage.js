@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadPostsRequest, searchPostsRequest, getPosts } from '../../redux/postsReducer';
+import { loadPostsRequest, searchPostsRequest, getPosts, getUserRequest } from '../../redux/postsReducer';
 import { Link } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import MiniPost from '../MiniPost/MiniPost';
@@ -14,6 +14,12 @@ function MainPage() {
     dispatch(loadPostsRequest());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getUserRequest());
+  }, [dispatch]);
+  
+  const user = useSelector(state => state.posts.user);
+  console.log('user', user);
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -30,7 +36,29 @@ function MainPage() {
 
   return (
     <div className="container">
-      <h1>Posts</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Posts</h1>
+        <div>
+          <Link to="/register">
+            <Button variant="outline-primary" className="me-2">
+              Register
+            </Button>
+          </Link>
+          {
+            user ? (<Link to="/logout">
+              <Button variant="outline-danger">
+                Logout
+              </Button>
+            </Link>) : (<Link to="/login">
+              <Button variant="outline-success">
+                Login
+              </Button>
+            </Link>)
+
+
+          }
+        </div>
+      </div>
       <Link to="/add-post">
         <Button variant="secondary" className="mb-4">
           Add Post

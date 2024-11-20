@@ -21,7 +21,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: MongoStore.create({
-            mongoUrl: 'mongodb://0.0.0.0:27017/postsDB', // Replace with your database URI
+            mongoUrl: 'mongodb://0.0.0.0:27017/postsDB',
         }),
     })
 );
@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname,'/client/build')));
 
 app.use('/api', postsRoutes);
 app.use('/api', usersRoutes);
-app.use('/auth', usersAuth);
+app.use('/api/auth', usersAuth);
 
 // • GET /api/ads – który zwróci wszystkie ogłoszenia,
 // • GET /api/ads/:id – który zwróci konkretne ogłoszenie,

@@ -19,6 +19,9 @@ const LOAD_POSTS = createActionName('LOAD_POSTS');
 const ADD_POST = createActionName('ADD_POST');
 const UPDATE_POST = createActionName('UPDATE_POST');
 const SEARCH_POSTS = createActionName('SEARCH_POSTS');
+const REGISTER_USER = createActionName('REGISTER_USER');
+const LOGIN_USER = createActionName('LOGIN_USER');
+const GET_USER = createActionName('GET_USER');
 
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const endRequest = payload => ({ payload, type: END_REQUEST });
@@ -28,6 +31,9 @@ export const loadPosts = payload => ({ payload, type: LOAD_POSTS });
 export const updatePost = payload => ({ payload, type: UPDATE_POST });
 export const addPost = payload => ({ payload, type: ADD_POST });
 export const searchPosts = payload => ({ payload, type: SEARCH_POSTS });
+export const registerUser = (payload) => ({ payload, type: REGISTER_USER });
+export const loginUser = (payload) => ({ payload, type: LOGIN_USER });
+export const getUser = (payload) => ({payload, type: GET_USER });
 
 /* THUNKS */
 export const logoutRequest = () => {
@@ -145,7 +151,8 @@ export const searchPostsRequest = (searchPhrase) => {
 /* INITIAL STATE */
 const initialState = {
     data: [],
-    requests: {}
+    requests: {},
+    user: undefined,
 };
 
 /* REDUCER */
@@ -175,6 +182,10 @@ export default function reducer(statePart = initialState, action = {}) {
             };
         case SEARCH_POSTS:
             return { ...statePart, data: [...action.payload] };
+        case REGISTER_USER:
+            return { ...statePart, message: action.payload.message };
+        case LOGIN_USER:
+            return { ...statePart, message: action.payload.message,  user: action.payload.user };
         default:
             return statePart;
     }
