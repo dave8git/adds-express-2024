@@ -7,7 +7,8 @@ const postSchema = new mongoose.Schema({
   image: { type: String, required: false },
   price: { type: String, required: true },
   location: { type: String, required: true },
-  seller: { type: String, required: true }
+  seller: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true } // Added author field
 });
 
 module.exports = mongoose.model("post", postSchema);

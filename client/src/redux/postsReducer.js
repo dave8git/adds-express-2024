@@ -148,6 +148,18 @@ export const searchPostsRequest = (searchPhrase) => {
     };
 };
 
+export const logoutRequest = () => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'LOGOUT' }));
+        try {
+            await axios.post(`${API_URL}/auth/logout`);
+            dispatch(endRequest({ name: 'LOGOUT' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'LOGOUT', error: error.response?.data?.message || 'An error occurred' }));
+        }
+    };
+};
+
 /* INITIAL STATE */
 const initialState = {
     data: [],

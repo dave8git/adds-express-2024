@@ -9,7 +9,9 @@ const { default_type } = require('mime');
 exports.getAll = async (req, res) => {
 
     try {
-        res.json(await Posts.find());
+        const posts = await Posts.find().populate('author', 'login avatar');
+        //res.json(await Posts.find());
+        res.json(posts);
     }
     catch (err) {
         res.status(500).json({ message: err });
@@ -18,22 +20,21 @@ exports.getAll = async (req, res) => {
 
 exports.getById = async (req, res) => {
     try {
-        const post = await Posts.findById(req.params.id);
+        const post = await Posts.findById(req.params.id).populate('author', 'login avatar');
         if (!post) return res.status(404).json({ message: 'Ad not found' });
         res.json(post);
     } catch (err) {
         res.status(500).json({ message: err });
     }
-}
+};
 
 exports.postAd = async (req, res) => {
     try {
-        const { title, content, date, price, location, seller } = req.body;
-        console.log('Received data:', req.body); // Check if data is being received
+        const { title, content, date, price, location, seller, author } = req.body; // Include author in destructuring
         if (!req.file) {
             return res.status(400).json({ message: 'Image file is required.' });
         }
-        const fileType = req.file ? await getImageFileType(req.file) : unknown;
+        const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
 
         if (req.file && ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)) {
             const newPost = new Posts({
@@ -43,27 +44,23 @@ exports.postAd = async (req, res) => {
                 image: req.file.filename,
                 price,
                 location,
-                seller
+                seller,
+                author // Save the author reference
             });
             await newPost.save();
-            console.log('Post saved:', newPost); // Confirm the post is saved
             res.status(201).json(newPost);
         } else {
             res.status(400).send({ message: 'Bad request' });
         }
-
     } catch (err) {
-        console.error('Error in postAd:', err); // Log any errors
         res.status(500).json({ message: err.message });
     }
 };
 
 exports.putAd = async (req, res) => {
-    console.log('Updating post with ID:', req.params.id);
-    //console.log('Received fields:', updateFields);
     try {
-        const { title, content, price, location, seller } = req.body;
-        const updateFields = { title, content, price, location, seller };
+        const { title, content, price, location, seller, author } = req.body; // Include author in destructuring
+        const updateFields = { title, content, price, location, seller, author };
 
         if (req.file) {
             updateFields.image = req.file.filename;
