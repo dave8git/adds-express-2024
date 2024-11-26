@@ -77,11 +77,12 @@ const PostForm = () => {
         data.forEach((value, key) => {
             console.log(key, value); // Logs each form data key and its value
         });
-        
+
         if (id) {
             console.log('updatePostRequest started', id, data);
             dispatch(updatePostRequest(id, data));
         } else {
+            console.log('dispatch(addPostRequest');
             dispatch(addPostRequest(data));
         }
     

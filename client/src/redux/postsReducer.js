@@ -36,6 +36,47 @@ export const loginUser = (payload) => ({ payload, type: LOGIN_USER });
 export const getUser = (payload) => ({payload, type: GET_USER });
 
 /* THUNKS */
+export const getUserRequest = () => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'GET_USER' }));
+        try {
+            const response = await axios.get(`${API_URL}/auth/user`);
+            console.log('getUser: response.data', response);
+            dispatch(getUser(response.data )); // Dispatch registration success
+            dispatch(endRequest({ name: 'GET_USER' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'GET_USER', error: error.response?.data?.message || 'An error occurred' }));
+        }
+    };
+};
+
+export const loginUserRequest = (formData) => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'LOGIN_USER' }));
+        try {
+            const response = await axios.post(`${API_URL}/auth/login`, formData);
+            console.log('response.data', response.data, formData);
+            dispatch(loginUser({message: response.data.message, user: formData.login })); // Dispatch registration success
+            dispatch(endRequest({ name: 'LOGIN_USER' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'LOGIN_USER', error: error.response?.data?.message || 'An error occurred' }));
+        }
+    };
+};
+
+export const registerUserRequest = (formData) => {
+    return async (dispatch) => {
+        dispatch(startRequest({ name: 'REGISTER_USER' }));
+        try {
+            const response = await axios.post(`${API_URL}/auth/register`, formData);
+            dispatch(registerUser(response.data)); // Dispatch registration success
+            dispatch(endRequest({ name: 'REGISTER_USER' }));
+        } catch (error) {
+            dispatch(errorRequest({ name: 'REGISTER_USER', error: error.response?.data?.message || 'An error occurred' }));
+        }
+    };
+};
+
 export const logoutRequest = () => {
     return async (dispatch) => {
         dispatch(startRequest({ name: 'LOGOUT' }));
@@ -73,9 +114,11 @@ export const loadLocalPosts = () => {
 
 export const addPostRequest = (post) => {
     console.log('addPostRequest works');
-    return async dispatch => {
+    return async (dispatch, getState)=> {
         dispatch(startRequest({ name: 'ADD_POST' }));
         try {
+            const state = getState();
+            console.log('!!!', state.post.user);
             let res = await axios.post(`${API_URL}/posts`, post, {
                 // headers: {
                 //     'Content-Type': 'multipart/form-data'
@@ -86,6 +129,7 @@ export const addPostRequest = (post) => {
             dispatch(endRequest({ name: 'ADD_POST' }));
             dispatch(loadPostsRequest());
         } catch (error) {
+            console.log('error', error);
             dispatch(errorRequest({ name: 'ADD_POST', error: error.response?.data?.message || 'An error occured' }));
         }
     };
@@ -148,18 +192,6 @@ export const searchPostsRequest = (searchPhrase) => {
     };
 };
 
-export const logoutRequest = () => {
-    return async (dispatch) => {
-        dispatch(startRequest({ name: 'LOGOUT' }));
-        try {
-            await axios.post(`${API_URL}/auth/logout`);
-            dispatch(endRequest({ name: 'LOGOUT' }));
-        } catch (error) {
-            dispatch(errorRequest({ name: 'LOGOUT', error: error.response?.data?.message || 'An error occurred' }));
-        }
-    };
-};
-
 /* INITIAL STATE */
 const initialState = {
     data: [],
@@ -198,6 +230,8 @@ export default function reducer(statePart = initialState, action = {}) {
             return { ...statePart, message: action.payload.message };
         case LOGIN_USER:
             return { ...statePart, message: action.payload.message,  user: action.payload.user };
+        case GET_USER:
+            return { ...statePart, user: action.payload };
         default:
             return statePart;
     }

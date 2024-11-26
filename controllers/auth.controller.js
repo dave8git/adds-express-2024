@@ -69,6 +69,9 @@ exports.login = async (req, res) => {
             else {
                 if (bcrypt.compareSync(password, user.password)) {
                     req.session.login = user.login;
+                    req.session.userId = user._id.toString();
+                    // console.log('user', user);
+                    // console.log('userid.toString()', user._id.toString());
                     res.status(200).send({ message: 'Login successful ' });
                 }
                 else {
@@ -91,5 +94,6 @@ exports.getUser = async (req, res) => {
     // else {
     //     res.status(401).send({ message: 'Unauthoried' });
     // }
-    res.send(req.session.login);
+    console.log('getUser req.session', req.session);
+    res.send(req.session.user);
 }
