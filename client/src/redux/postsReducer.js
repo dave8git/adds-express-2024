@@ -118,11 +118,21 @@ export const addPostRequest = (post) => {
         dispatch(startRequest({ name: 'ADD_POST' }));
         try {
             const state = getState();
-            console.log('!!!', state.post.user);
-            let res = await axios.post(`${API_URL}/posts`, post, {
-                // headers: {
-                //     'Content-Type': 'multipart/form-data'
-                // }
+            console.log('!!!', state.posts.user);
+            console.log('post', post);
+            const postObject = {};
+            for (const [key, value] of post.entries()) {
+                postObject[key] = value;
+            }
+            console.log('Converted post (Object)', postObject);
+            const objectToBackend = {
+                ...postObject,
+                author: state.posts.user.id,
+            }
+            let res = await axios.post(`${API_URL}/posts`, objectToBackend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             await new Promise((resolve) => setTimeout(resolve, 1000));
             dispatch(addPost(res));
