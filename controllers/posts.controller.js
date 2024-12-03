@@ -57,28 +57,35 @@ exports.postAd = async (req, res) => {
     }
 };
 
-exports.putAd = async (req, res) => {
+exports.putAd = async (req, res) => { // edit
     try {
-        const { title, content, price, location, seller, author } = req.body; // Include author in destructuring
+        const { title, content, price, location, seller } = req.body; // Include author in destructuring
         const updateFields = { title, content, price, location, seller, author };
 
         if (req.file) {
             updateFields.image = req.file.filename;
         }
 
-        const updatedPost = await Posts.findByIdAndUpdate(req.params.id, updateFields, { new: true });
-        if (!updatedPost) return res.status(404).json({ message: 'Ad not found' });
-        res.json(updatedPost);
+        // const updatedPost = await Posts.findByIdAndUpdate(req.params.id, updateFields, { new: true });
+        const foundPost = await Posts.findById(req.params.id);
+        if (!foundPost) return res.status(404).json({ message: 'Ad not found' });
+        if (foundPost.author._id === req.session.user.id) {
+            const updatedPost = await Posts.findByIdAndUpdate(req.params.id, updateFields, { new: true });
+            res.json(updatedPost);
+        }
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
-exports.deleteAd = async (req, res) => {
+exports.deleteAd = async (req, res) => { // delete
     try {
-        const deletedPost = await Posts.findByIdAndDelete(req.params.id);
-        if (!deletedPost) return res.status(404).json({ message: 'Ad not found ' });
-        res.json({ message: 'Ad deleted', post: deletedPost });
+        const foundPost = await Posts.findById(req.params.id);
+        if (!foundPost) return res.status(404).json({ message: 'Ad not found' });
+        if (foundPost.author._id === req.session.user.id) {
+            const deletedPost = await Posts.findByIdAndDelete(req.params.id);
+            res.json({ message: 'Ad deleted', post: deletedPost });
+        }
     } catch (err) {
         res.status(500).json({ message: err });
     }
