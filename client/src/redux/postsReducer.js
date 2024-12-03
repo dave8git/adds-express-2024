@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8000/api';
 /* SELECTORS */
 export const getPosts = ({ posts }) => posts.data;
 export const getPostsById = ({ posts }, id) => posts.data.find(post => post._id === id);
-
+export const getLoggedUser = ({ posts }) => posts.user;
 /* ACTIONS */
 // action name creator
 const reducerName = 'posts';
@@ -118,8 +118,8 @@ export const addPostRequest = (post) => {
         dispatch(startRequest({ name: 'ADD_POST' }));
         try {
             const state = getState();
-            console.log('!!!', state.posts.user);
-            console.log('post', post);
+            // console.log('!!!', state.posts.user);
+            // console.log('post', post);
             const postObject = {};
             for (const [key, value] of post.entries()) {
                 postObject[key] = value;
